@@ -1,0 +1,6 @@
+
+# Local developer stuff
+/twooter.db*
+
+# Compiled stuff
+__pycache__/
