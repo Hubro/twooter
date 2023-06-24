@@ -8,16 +8,13 @@ the db module, this function got its own module.
 
 from collections import defaultdict
 
-from pypika.functions import Extract
-from pypika.queries import ArithmeticExpression
-from tortoise.expressions import F
+from pypika import CustomFunction
 from tortoise.functions import Count, Function
-from tortoise.models import Field
 
 import twooter.db
 
 
-class Extract(Function):
+class ExtractYear(Function):
     """Custom Tortoise function for extracting a subfield from a value
 
     This is required to achieve grouping by the "year" subfield of a datetime value.
@@ -27,12 +24,7 @@ class Extract(Function):
         https://github.com/tortoise/tortoise-orm/issues/608#issuecomment-758358476
     """
 
-    database_func = Extract
-
-    def _get_function_field(
-        self, field: ArithmeticExpression | Field | str, *default_values
-    ):
-        return self.database_func(*default_values, field)
+    database_func = CustomFunction("YEAR", ["name"])
 
 
 MessageStats = dict[str, dict[str, int]]  # year -> tag -> twoot count
@@ -48,7 +40,7 @@ async def query_stats(start_year: int, end_year: int) -> MessageStats:
 
     raw_stats = (
         await twooter.db.Message.annotate(
-            year=Extract(F("timestamp"), "YEAR"),
+            year=ExtractYear("timestamp"),
             count=Count("id"),
         )
         .group_by("year", "tag")
