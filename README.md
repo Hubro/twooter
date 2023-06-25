@@ -115,6 +115,7 @@ something I'd prefer leaving to the professionals.
 
 My next steps for supporting a large scale Twooter in production would be:
 
+- Add authentication, either with email registration or OAuth towards some other social media platform
 - Set up the infrastructure for static code analysis (linting, type checking), unit testing (pytest), E2E testing (maybe
   Robot Framework?) and vulnerability scanning (e.g. [Grype])
   - **Important**: These steps should all be trivial to run locally on development machines, so I would set up scripts
