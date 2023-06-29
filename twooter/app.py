@@ -43,13 +43,16 @@ async def post_message(input: Message):
 
 
 @app.get("/messages")
-async def get_messages(tag: str | None = None):
+async def get_messages(tag: str | None = None, limit: int | None = None):
     """Gets all messages, optionally filtered by tag"""
 
-    messages = twooter.db.Message.all()
+    messages = twooter.db.Message.all().order_by("-timestamp")
 
     if tag:
         messages = messages.filter(tag=tag)
+
+    if limit:
+        messages = messages.limit(limit)
 
     return await messages
 
